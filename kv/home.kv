@@ -1,0 +1,109 @@
+<HomeScreen>:
+    name: "home"
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 1,1,1,1
+        padding: dp(18)
+        spacing: dp(14)
+
+        # Top row like your design
+        BoxLayout:
+            size_hint_y: None
+            height: dp(44)
+
+            BoxLayout:
+                size_hint_x: 0.7
+                spacing: dp(10)
+                padding: 0, dp(8), 0, 0
+
+                IconLabel:
+                    text: "🔒"
+                    font_size: "18sp"
+
+                IconLabel:
+                    text: "Jason63"
+                    font_size: "15sp"
+                    bold: True
+
+                IconLabel:
+                    text: "▾"
+                    font_size: "16sp"
+
+            BoxLayout:
+                size_hint_x: 0.3
+                spacing: dp(10)
+                padding: 0, dp(6), 0, 0
+                Widget:
+                IconButton:
+                    text: "+"
+                IconButton:
+                    text: "≡"
+
+        # Profile row
+        BoxLayout:
+            size_hint_y: None
+            height: dp(60)
+            spacing: dp(12)
+
+            Avatar:
+                size_hint: None, None
+                size: dp(44), dp(44)
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: dp(2)
+                padding: 0, dp(6), 0, 0
+
+                Label:
+                    text: "MIST"
+                    color: 0.07, 0.07, 0.07, 1
+                    font_size: "16sp"
+                    bold: True
+
+                Label:
+                    text: "IT Entrepreneur"
+                    color: 0.30, 0.30, 0.30, 1
+                    font_size: "13sp"
+
+        # Tiles
+        GridLayout:
+            cols: 2
+            spacing: dp(14)
+            row_default_height: dp(140)
+            row_force_default: True
+
+            TileCard:
+                title: "Navigation"
+                icon_text: "➤"
+                bg_hex: "B79BFF"
+                on_release: app.go_to("navigation")
+
+            TileCard:
+                title: "Chat"
+                icon_text: "💬"
+                bg_hex: "FF9C9C"
+                on_release: app.go_to("chat")
+
+            TileCard:
+                title: "Reminder"
+                icon_text: "🗓"
+                bg_hex: "F5D24B"
+                on_release: app.go_to("reminder")
+
+            TileCard:
+                title: "Device Pairing"
+                icon_text: "⟐"
+                bg_hex: "7EC9FF"
+                on_release: app.go_to("pairing")
+
+            TileCard:
+                title: "Connect to\\norganization"
+                icon_text: "⛓"
+                bg_hex: "65E0A0"
+                on_release: app.go_to("org")
+
+            TileCard:
+                title: "Settings"
+                icon_text: "⚙"
+                bg_hex: "56E1D6"
+                on_release: app.go_to("settings")

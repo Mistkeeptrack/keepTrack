@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keep Track</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="logo">Keep<span>Track</span></div>
+        <nav class="nav">
+          <div class="nav-section-label">Main</div>
+          <button class="nav-item nav-item-active">Dashboard</button>
+          <button class="nav-item">Tasks</button>
+          <button class="nav-item">Projects</button>
+          <button class="nav-item">Calendar</button>
+
+          <div class="nav-section-label">Insights</div>
+          <button class="nav-item">Reports</button>
+          <button class="nav-item">Activity</button>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-pill">
+            <div class="user-avatar">A</div>
+            <div class="user-meta">
+              <div class="user-name">Alex Johnson</div>
+              <div class="user-role">Product Manager</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Overview of your current work</p>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn ghost">+ New Project</button>
+            <button class="btn primary">+ New Task</button>
+          </div>
+        </header>
+
+        <section class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Tasks in progress</div>
+            <div class="summary-value">12</div>
+            <div class="summary-meta positive">+3 since last week</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Completed this week</div>
+            <div class="summary-value">27</div>
+            <div class="summary-meta">On track</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Overdue</div>
+            <div class="summary-value warning">4</div>
+            <div class="summary-meta warning-text">Needs attention</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Focus time</div>
+            <div class="summary-value">18h</div>
+            <div class="summary-meta">This week</div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>My Tasks</h2>
+              <div class="panel-header-actions">
+                <button class="chip chip-active">Today</button>
+                <button class="chip">This week</button>
+                <button class="chip">All</button>
+              </div>
+            </div>
+            <ul class="task-list">
+              <li class="task-item">
+                <div>
+                  <div class="task-title">Design onboarding flow</div>
+                  <div class="task-meta">
+                    Project: New mobile app · Due today
+                  </div>
+                </div>
+                <span class="status-pill status-in-progress">In progress</span>
+              </li>
+              <li class="task-item">
+                <div>
+                  <div class="task-title">Review sprint backlog</div>
+                  <div class="task-meta">Project: Web platform · Due tomorrow</div>
+                </div>
+                <span class="status-pill status-todo">To do</span>
+              </li>
+              <li class="task-item">
+                <div>
+                  <div class="task-title">Sync with marketing</div>
+                  <div class="task-meta">
+                    Project: Launch campaign · Due in 2 days
+                  </div>
+                </div>
+                <span class="status-pill status-completed">Completed</span>
+              </li>
+              <li class="task-item">
+                <div>
+                  <div class="task-title">Update product roadmap</div>
+                  <div class="task-meta">Project: Q3 planning · Overdue</div>
+                </div>
+                <span class="status-pill status-overdue">Overdue</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Upcoming</h2>
+              <button class="link-button">View calendar</button>
+            </div>
+            <ul class="timeline">
+              <li class="timeline-item">
+                <div class="timeline-time">09:00</div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Daily standup</div>
+                  <div class="timeline-meta">Team Sync · 15 min</div>
+                </div>
+              </li>
+              <li class="timeline-item">
+                <div class="timeline-time">11:30</div>
+                <div class="timeline-content">
+                  <div class="timeline-title">UX review</div>
+                  <div class="timeline-meta">UX & Product · 45 min</div>
+                </div>
+              </li>
+              <li class="timeline-item">
+                <div class="timeline-time">14:00</div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Stakeholder check-in</div>
+                  <div class="timeline-meta">Marketing & Sales · 30 min</div>
+                </div>
+              </li>
+              <li class="timeline-item">
+                <div class="timeline-time">16:00</div>
+                <div class="timeline-content">
+                  <div class="timeline-title">Focus block</div>
+                  <div class="timeline-meta">Deep work · 2 hours</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
+

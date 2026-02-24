@@ -1,0 +1,17 @@
+<SplashScreen>:
+    name: "splash"
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: "assets/images/mistlogo.jpeg"
+            size_hint: None, None
+            size: dp(220), dp(220)
+            pos_hint: {"center_x": 0.5, "center_y": 0.55}
+            allow_stretch: True
+            keep_ratio: True

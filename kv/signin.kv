@@ -1,0 +1,42 @@
+<SignInScreen>:
+    name: "signin"
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: dp(18)
+        spacing: dp(14)
+
+        MDTopAppBar:
+            title: "Sign In"
+            elevation: 0
+            md_bg_color: 1, 1, 1, 1
+            specific_text_color: 0, 0, 0, 1
+            left_action_items: [["arrow-left", lambda x: app.go_to("create_account")]]
+
+        MDLabel:
+            text: "EMAIL"
+            theme_text_color: "Custom"
+            text_color: 0.45, 0.45, 0.45, 1
+            font_style: "Caption"
+
+        MDTextField:
+            id: signin_email
+            hint_text: "Email"
+            mode: "line"
+
+        MDLabel:
+            text: "PASSWORD"
+            theme_text_color: "Custom"
+            text_color: 0.45, 0.45, 0.45, 1
+            font_style: "Caption"
+
+        MDTextField:
+            id: signin_password
+            password: True
+            hint_text: "Password"
+            mode: "line"
+
+        MDFillRoundFlatButton:
+            text: "Sign In"
+            md_bg_color: 0, 0, 0, 1
+            text_color: 1, 1, 1, 1
+            on_release: app.signin_action()

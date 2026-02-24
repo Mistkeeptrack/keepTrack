@@ -1,0 +1,140 @@
+<CreateAccountScreen>:
+    name: "create_account"
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 1, 1, 1, 1
+
+        MDTopAppBar:
+            title: "Create Account"
+            elevation: 0
+            md_bg_color: 1, 1, 1, 1
+            specific_text_color: 0, 0, 0, 1
+            left_action_items: [["arrow-left", lambda x: app.go_to("splash")]]
+
+        ScrollView:
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint_y: None
+                height: self.minimum_height
+                padding: dp(18)
+                spacing: dp(14)
+
+                MDLabel:
+                    text: "SELECT COUNTRY"
+                    theme_text_color: "Custom"
+                    text_color: 0.45, 0.45, 0.45, 1
+                    font_style: "Caption"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                MDDropDownItem:
+                    id: country_item
+                    text: "USA"
+                    size_hint_x: 1
+                    on_release: app.open_country_menu()
+
+                MDSeparator:
+
+                MDLabel:
+                    text: "FIRST NAME"
+                    theme_text_color: "Custom"
+                    text_color: 0.45, 0.45, 0.45, 1
+                    font_style: "Caption"
+
+                MDTextField:
+                    id: first_name
+                    hint_text: "Enter first name"
+                    mode: "line"
+
+                MDLabel:
+                    text: "LAST NAME"
+                    theme_text_color: "Custom"
+                    text_color: 0.45, 0.45, 0.45, 1
+                    font_style: "Caption"
+
+                MDTextField:
+                    id: last_name
+                    hint_text: "Enter last name"
+                    mode: "line"
+
+                MDLabel:
+                    text: "EMAIL"
+                    theme_text_color: "Custom"
+                    text_color: 0.45, 0.45, 0.45, 1
+                    font_style: "Caption"
+
+                MDTextField:
+                    id: email
+                    hint_text: "Email"
+                    mode: "line"
+
+                MDLabel:
+                    text: "PASSWORD"
+                    theme_text_color: "Custom"
+                    text_color: 0.45, 0.45, 0.45, 1
+                    font_style: "Caption"
+
+                MDTextField:
+                    id: password
+                    password: True
+                    hint_text: "Enter password"
+                    mode: "line"
+
+                MDLabel:
+                    text: "CONFIRM PASSWORD"
+                    theme_text_color: "Custom"
+                    text_color: 0.45, 0.45, 0.45, 1
+                    font_style: "Caption"
+
+                MDTextField:
+                    id: confirm_password
+                    password: True
+                    hint_text: "Confirm password"
+                    mode: "line"
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: dp(42)
+                    spacing: dp(10)
+
+                    MDCheckbox:
+                        id: terms_check
+                        size_hint: None, None
+                        size: dp(28), dp(28)
+
+                    MDLabel:
+                        text: "I agree to the terms of service and privacy policy"
+                        theme_text_color: "Custom"
+                        text_color: 0.35, 0.35, 0.35, 1
+                        font_style: "Caption"
+                        valign: "middle"
+
+                MDFillRoundFlatButton:
+                    text: "Sign Up"
+                    size_hint_x: 1
+                    height: dp(48)
+                    md_bg_color: 0.95, 0.70, 0.10, 1
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 0, 1
+                    on_release: app.signup_action()
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: dp(60)
+                    spacing: dp(10)
+
+                    MDLabel:
+                        text: "Already have an Account ?"
+                        theme_text_color: "Custom"
+                        text_color: 0.55, 0.55, 0.55, 1
+                        font_style: "Caption"
+                        halign: "right"
+
+                    MDFillRoundFlatButton:
+                        text: "Sign In"
+                        md_bg_color: 0, 0, 0, 1
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        on_release: app.go_to("signin")
+                        size_hint_x: None
+                        width: dp(90)
