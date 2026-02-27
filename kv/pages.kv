@@ -68,3 +68,20 @@
         MDLabel:
             text: "Settings page"
             halign: "center"
+<TaskScreen>:
+    name: "tasks"
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Tasks"
+            left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+
+        MDLabel:
+            id: status_label
+            text: "Loading..."
+            halign: "center"
+
+        ScrollView:
+            MDList:
+                id: task_list
