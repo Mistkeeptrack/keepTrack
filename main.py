@@ -1,18 +1,16 @@
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.metrics import dp
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import Screen
 
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.toast import toast
 
-from pymongo import MongoClient
-import hashlib
+from supabase_client import supabase
 
 Window.size = (360, 640)
 
@@ -80,6 +78,9 @@ class OrgScreen(Screen):
 class SettingsScreen(Screen):
     pass
 
+class TaskScreen(Screen):
+    def on_enter(self, *args):
+        print("Task screen opened")
 
 # ---------- App ----------
 class MistApp(MDApp):
@@ -95,19 +96,9 @@ class MistApp(MDApp):
         Builder.load_file("kv/home.kv")
         root = Builder.load_file("kv/main.kv")
 
-        # --- MongoDB setup ---
-        mongo_uri = "YOUR_MONGODB_ATLAS_CONNECTION_STRING"
-
-        self.users = None
-        try:
-            if "YOUR_MONGODB" not in mongo_uri:
-                self.client = MongoClient(mongo_uri)
-                self.db = self.client["mist_app"]
-                self.users = self.db["users"]
-            else:
-                self.users = None
-        except Exception:
-            self.users = None
+        # Keep auth/session info here (optional)
+        self.current_user = None
+        self.current_profile = None
 
         # --- Country dropdown menu ---
         create_screen = root.get_screen("create_account")
@@ -139,10 +130,7 @@ class MistApp(MDApp):
         self.root.get_screen("create_account").ids.country_item.set_item(country_name)
         self.country_menu.dismiss()
 
-    # ---------- Auth ----------
-    def hash_password(self, password):
-        return hashlib.sha256(password.encode()).hexdigest()
-
+    # ---------- Auth (Supabase) ----------
     def signup_action(self):
         screen = self.root.get_screen("create_account")
         first = screen.ids.first_name.text.strip()
@@ -151,6 +139,13 @@ class MistApp(MDApp):
         pwd = screen.ids.password.text
         cpwd = screen.ids.confirm_password.text
         terms = screen.ids.terms_check.active
+
+        # If your country_item is an MDTextField with set_item, it will store the text
+        country = ""
+        try:
+            country = screen.ids.country_item.text.strip()
+        except Exception:
+            country = ""
 
         if not all([first, last, email, pwd, cpwd]):
             toast("Fill all fields")
@@ -164,24 +159,33 @@ class MistApp(MDApp):
             toast("Accept terms")
             return
 
-        if not self.users:
-            toast("DB not connected (add your MongoDB URI)")
-            return
+        try:
+            # 1) Create Auth user
+            auth_resp = supabase.auth.sign_up({"email": email, "password": pwd})
+            user = auth_resp.user
 
-        if self.users.find_one({"email": email}):
-            toast("Email already exists")
-            return
+            if not user:
+                toast("Sign up failed")
+                return
 
-        hashed = self.hash_password(pwd)
-        self.users.insert_one({
-            "first_name": first,
-            "last_name": last,
-            "email": email,
-            "password": hashed
-        })
+            # 2) Insert profile row linked to auth.users(id)
+            supabase.table("profiles").insert({
+                "id": user.id,
+                "first_name": first,
+                "last_name": last,
+                "country": country,
+            }).execute()
 
-        toast("Account created")
-        self.root.current = "signin"
+            toast("Account created. Please sign in.")
+            self.root.current = "signin"
+
+        except Exception as e:
+            msg = str(e)
+            # A nicer message for common “already registered” case
+            if "already" in msg.lower() and "registered" in msg.lower():
+                toast("Email already exists")
+            else:
+                toast(f"Signup error: {msg}")
 
     def signin_action(self):
         screen = self.root.get_screen("signin")
@@ -192,21 +196,27 @@ class MistApp(MDApp):
             toast("Enter email & password")
             return
 
-        if not self.users:
-            toast("DB not connected (add your MongoDB URI)")
-            return
+        try:
+            auth_resp = supabase.auth.sign_in_with_password({"email": email, "password": pwd})
+            user = auth_resp.user
 
-        user = self.users.find_one({"email": email})
-        if not user:
-            toast("User not found")
-            return
+            if not user:
+                toast("Login failed")
+                return
 
-        if self.hash_password(pwd) != user["password"]:
-            toast("Incorrect password")
-            return
+            self.current_user = user
 
-        toast(f"Welcome {user['first_name']}")
-        self.root.current = "home"
+            # Fetch profile (optional, but useful for welcome name)
+            profile = supabase.table("profiles").select("*").eq("id", user.id).single().execute().data
+            self.current_profile = profile or {}
+
+            first_name = (self.current_profile.get("first_name") or "").strip()
+            toast(f"Welcome {first_name}" if first_name else "Welcome")
+
+            self.root.current = "home"
+
+        except Exception:
+            toast("Incorrect email or password")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+<TaskScreen>:
+    name: "tasks"
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Tasks"
+            left_action_items: [["arrow-left", lambda x: app.go("home")]]
+
+        MDLabel:
+            id: status_label
+            text: "Loading..."
+            theme_text_color: "Hint"
+            size_hint_y: None
+            height: dp(28)
+            padding_x: dp(16)
+
+        ScrollView:
+            MDList:
+                id: task_list
