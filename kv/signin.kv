@@ -36,7 +36,19 @@
             mode: "line"
 
         MDFillRoundFlatButton:
+            id: signin_btn
             text: "Sign In"
             md_bg_color: 0, 0, 0, 1
             text_color: 1, 1, 1, 1
+            disabled: app.is_signing_in
             on_release: app.signin_action()
+
+        MDLabel:
+            id: signin_status
+            text: " "
+            theme_text_color: "Custom"
+            text_color: 0.4, 0.4, 0.4, 1
+            font_style: "Caption"
+            halign: "center"
+            size_hint_y: None
+            height: dp(18)

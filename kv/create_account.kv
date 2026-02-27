@@ -110,13 +110,25 @@
                         valign: "middle"
 
                 MDFillRoundFlatButton:
+                    id: signup_btn
                     text: "Sign Up"
                     size_hint_x: 1
                     height: dp(48)
                     md_bg_color: 0.95, 0.70, 0.10, 1
                     theme_text_color: "Custom"
                     text_color: 0, 0, 0, 1
+                    disabled: app.is_signing_up
                     on_release: app.signup_action()
+
+                MDLabel:
+                    id: signup_status
+                    text: " "
+                    theme_text_color: "Custom"
+                    text_color: 0.4, 0.4, 0.4, 1
+                    font_style: "Caption"
+                    halign: "center"
+                    size_hint_y: None
+                    height: dp(18)
 
                 MDBoxLayout:
                     size_hint_y: None

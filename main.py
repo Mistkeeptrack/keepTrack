@@ -1,9 +1,12 @@
+import threading
+import logging
+
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 
 from kivymd.app import MDApp
@@ -13,6 +16,10 @@ from kivymd.toast import toast
 from supabase_client import supabase
 
 Window.size = (360, 640)
+
+# Reduce noisy HTTP logs
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 
 # ---------- Helpers ----------
@@ -78,12 +85,18 @@ class OrgScreen(Screen):
 class SettingsScreen(Screen):
     pass
 
+
 class TaskScreen(Screen):
     def on_enter(self, *args):
         print("Task screen opened")
 
+
 # ---------- App ----------
 class MistApp(MDApp):
+    # IMPORTANT: Define these as Kivy Properties so KV can read them during load
+    is_signing_up = BooleanProperty(False)
+    is_signing_in = BooleanProperty(False)
+
     def build(self):
         self.theme_cls.theme_style = "Light"
 
@@ -96,7 +109,7 @@ class MistApp(MDApp):
         Builder.load_file("kv/home.kv")
         root = Builder.load_file("kv/main.kv")
 
-        # Keep auth/session info here (optional)
+        # Session info
         self.current_user = None
         self.current_profile = None
 
@@ -116,6 +129,29 @@ class MistApp(MDApp):
 
         return root
 
+    # ---------- UI helpers ----------
+    def _toast(self, message: str):
+        Clock.schedule_once(lambda dt: toast(message), 0)
+
+    def _go(self, screen_name: str):
+        Clock.schedule_once(lambda dt: self.go_to(screen_name), 0)
+
+    def set_signup_status(self, text: str):
+        def _set(_dt):
+            try:
+                self.root.get_screen("create_account").ids.signup_status.text = text
+            except Exception:
+                pass
+        Clock.schedule_once(_set, 0)
+
+    def set_signin_status(self, text: str):
+        def _set(_dt):
+            try:
+                self.root.get_screen("signin").ids.signin_status.text = text
+            except Exception:
+                pass
+        Clock.schedule_once(_set, 0)
+
     # ---------- Navigation ----------
     def go_to(self, screen_name: str):
         self.root.current = screen_name
@@ -132,6 +168,10 @@ class MistApp(MDApp):
 
     # ---------- Auth (Supabase) ----------
     def signup_action(self):
+        if self.is_signing_up:
+            toast("Please wait...")
+            return
+
         screen = self.root.get_screen("create_account")
         first = screen.ids.first_name.text.strip()
         last = screen.ids.last_name.text.strip()
@@ -140,7 +180,7 @@ class MistApp(MDApp):
         cpwd = screen.ids.confirm_password.text
         terms = screen.ids.terms_check.active
 
-        # If your country_item is an MDTextField with set_item, it will store the text
+        # MDDropDownItem stores selection in .text
         country = ""
         try:
             country = screen.ids.country_item.text.strip()
@@ -150,44 +190,66 @@ class MistApp(MDApp):
         if not all([first, last, email, pwd, cpwd]):
             toast("Fill all fields")
             return
-
         if pwd != cpwd:
             toast("Passwords do not match")
             return
-
         if not terms:
             toast("Accept terms")
             return
 
-        try:
-            # 1) Create Auth user
-            auth_resp = supabase.auth.sign_up({"email": email, "password": pwd})
-            user = auth_resp.user
+        self.is_signing_up = True
+        self.set_signup_status("Creating account...")
 
-            if not user:
-                toast("Sign up failed")
-                return
+        def worker():
+            try:
+                auth_resp = supabase.auth.sign_up({"email": email, "password": pwd})
+                user = auth_resp.user
 
-            # 2) Insert profile row linked to auth.users(id)
-            supabase.table("profiles").insert({
-                "id": user.id,
-                "first_name": first,
-                "last_name": last,
-                "country": country,
-            }).execute()
+                if not user:
+                    self._toast("Sign up failed")
+                    self.set_signup_status("Sign up failed.")
+                    return
 
-            toast("Account created. Please sign in.")
-            self.root.current = "signin"
+                # Insert profile row
+                supabase.table("profiles").insert(
+                    {
+                        "id": user.id,
+                        "first_name": first,
+                        "last_name": last,
+                        "country": country,
+                    }
+                ).execute()
 
-        except Exception as e:
-            msg = str(e)
-            # A nicer message for common “already registered” case
-            if "already" in msg.lower() and "registered" in msg.lower():
-                toast("Email already exists")
-            else:
-                toast(f"Signup error: {msg}")
+                self._toast("Account created. Please sign in.")
+                self.set_signup_status("Account created. Please sign in.")
+                self._go("signin")
+
+            except Exception as e:
+                msg = str(e).lower()
+
+                if "over_email_send_rate_limit" in msg or "too many requests" in msg or " 429" in msg:
+                    self._toast("Too many signups. Try again in a few minutes.")
+                    self.set_signup_status("Too many signups. Try again in a few minutes.")
+                elif "already" in msg and ("registered" in msg or "exists" in msg):
+                    self._toast("Email already exists. Please sign in.")
+                    self.set_signup_status("Email already exists. Please sign in.")
+                    self._go("signin")
+                else:
+                    self._toast(f"Signup error: {str(e)}")
+                    self.set_signup_status(f"Signup error: {str(e)}")
+
+            finally:
+                self.is_signing_up = False
+                # clear after a moment so user can read it
+                Clock.schedule_once(lambda dt: self.set_signup_status(" "), 2)
+
+        threading.Thread(target=worker, daemon=True).start()
 
     def signin_action(self):
+        if self.is_signing_in:
+            toast("Please wait...")
+            return
+
         screen = self.root.get_screen("signin")
         email = screen.ids.signin_email.text.strip().lower()
         pwd = screen.ids.signin_password.text
@@ -196,27 +258,55 @@ class MistApp(MDApp):
             toast("Enter email & password")
             return
 
-        try:
-            auth_resp = supabase.auth.sign_in_with_password({"email": email, "password": pwd})
-            user = auth_resp.user
+        self.is_signing_in = True
+        self.set_signin_status("Signing in...")
 
-            if not user:
-                toast("Login failed")
-                return
+        def worker():
+            try:
+                auth_resp = supabase.auth.sign_in_with_password({"email": email, "password": pwd})
+                user = auth_resp.user
 
-            self.current_user = user
+                if not user:
+                    self._toast("Login failed")
+                    self.set_signin_status("Login failed.")
+                    return
 
-            # Fetch profile (optional, but useful for welcome name)
-            profile = supabase.table("profiles").select("*").eq("id", user.id).single().execute().data
-            self.current_profile = profile or {}
+                self.current_user = user
 
-            first_name = (self.current_profile.get("first_name") or "").strip()
-            toast(f"Welcome {first_name}" if first_name else "Welcome")
+                # Fetch profile (optional)
+                try:
+                    profile = (
+                        supabase.table("profiles")
+                        .select("*")
+                        .eq("id", user.id)
+                        .single()
+                        .execute()
+                        .data
+                    )
+                except Exception:
+                    profile = None
 
-            self.root.current = "home"
+                self.current_profile = profile or {}
+                first_name = (self.current_profile.get("first_name") or "").strip()
 
-        except Exception:
-            toast("Incorrect email or password")
+                self._toast(f"Welcome {first_name}" if first_name else "Welcome")
+                self.set_signin_status(" ")
+                self._go("home")
+
+            except Exception as e:
+                msg = str(e).lower()
+                if "invalid" in msg or "credentials" in msg or "401" in msg:
+                    self._toast("Incorrect email or password")
+                    self.set_signin_status("Incorrect email or password")
+                else:
+                    self._toast(f"Signin error: {str(e)}")
+                    self.set_signin_status(f"Signin error: {str(e)}")
+
+            finally:
+                self.is_signing_in = False
+                Clock.schedule_once(lambda dt: self.set_signin_status(" "), 2)
+
+        threading.Thread(target=worker, daemon=True).start()
 
 
 if __name__ == "__main__":
