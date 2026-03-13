@@ -1,6 +1,12 @@
 import threading
 import logging
 
+import os
+from kivy.resources import resource_add_path
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+resource_add_path(BASE_DIR)  # makes relative paths resolve from your project folder
+
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.core.window import Window
