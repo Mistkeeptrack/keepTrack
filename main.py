@@ -1,13 +1,17 @@
+import os
 import threading
 import logging
-
 import pycountry
 
-import os
-from kivy.resources import resource_add_path
+from kivy.config import Config
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-resource_add_path(BASE_DIR)  # makes relative paths resolve from your project folder
+
+# Set window icon BEFORE loading the window
+Config.set("kivy", "window_icon", os.path.join(BASE_DIR, "assets", "images", "mistlogo.jpeg"))
+
+from kivy.resources import resource_add_path
+resource_add_path(BASE_DIR)
 
 from kivy.lang import Builder
 from kivy.clock import Clock
@@ -23,11 +27,17 @@ from kivymd.toast import toast
 
 from supabase_client import supabase
 
-Window.size = (360, 640)
-Window.icon = os.path.join(BASE_DIR, "assets", "images", "mistlogo.ico")   # ✅ FIXED ICON
 
-Window.set_icon("static/blank.ico")  # ✅ Hides the default Kivy icon
-Window.title = ""
+# Window settings
+Window.size = (360, 640)
+
+# Remove title text but keep window controls
+Window.title = " "
+
+# Set app icon
+Window.set_icon(os.path.join(BASE_DIR, "assets", "images", "mistlogo.jpeg"))
+
+
 # Reduce noisy HTTP logs
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
@@ -104,16 +114,17 @@ class TaskScreen(Screen):
 
 # ---------- App ----------
 class MistApp(MDApp):
-       
-    # IMPORTANT: Define these as Kivy Properties so KV can read them during load
+
+    # Properties used in KV
     is_signing_up = BooleanProperty(False)
     is_signing_in = BooleanProperty(False)
 
+    title = " "
+
     def build(self):
+
         self.theme_cls.theme_style = "Light"
 
-# Remove the "Mist" text from the window title bar
-        Window.set_title ("")
         # Load KV files
         Builder.load_file("kv/components.kv")
         Builder.load_file("kv/pages.kv")
@@ -121,33 +132,43 @@ class MistApp(MDApp):
         Builder.load_file("kv/create_account.kv")
         Builder.load_file("kv/signin.kv")
         Builder.load_file("kv/home.kv")
+
         root = Builder.load_file("kv/main.kv")
 
         # Session info
         self.current_user = None
         self.current_profile = None
 
-        # --- Country dropdown menu ---
+        # ---------- Country Dropdown ----------
         create_screen = root.get_screen("create_account")
+
         menu_items = [
-            {"text": country.name, "on_release": lambda x=country.name: self.set_country(x),}
-        
+            {
+                "text": country.name,
+                "on_release": lambda x=country.name: self.set_country(x),
+            }
             for country in pycountry.countries
         ]
+
         self.country_menu = MDDropdownMenu(
             caller=create_screen.ids.country_item,
             items=menu_items,
             width_mult=4,
         )
+
         create_screen.ids.country_item.text = "United Kingdom"
+
         return root
 
-    # ---------- UI helpers ----------
+
+# ---------- UI Helpers ----------
     def _toast(self, message: str):
         Clock.schedule_once(lambda dt: toast(message), 0)
 
+
     def _go(self, screen_name: str):
         Clock.schedule_once(lambda dt: self.go_to(screen_name), 0)
+
 
     def set_signup_status(self, text: str):
         def _set(_dt):
@@ -155,7 +176,9 @@ class MistApp(MDApp):
                 self.root.get_screen("create_account").ids.signup_status.text = text
             except Exception:
                 pass
+
         Clock.schedule_once(_set, 0)
+
 
     def set_signin_status(self, text: str):
         def _set(_dt):
@@ -163,29 +186,37 @@ class MistApp(MDApp):
                 self.root.get_screen("signin").ids.signin_status.text = text
             except Exception:
                 pass
+
         Clock.schedule_once(_set, 0)
 
-    # ---------- Navigation ----------
+
+# ---------- Navigation ----------
     def go_to(self, screen_name: str):
         self.root.current = screen_name
+
 
     def back_to_home(self):
         self.root.current = "home"
 
+
     def open_country_menu(self):
         self.country_menu.open()
+
 
     def set_country(self, country_name):
         self.root.get_screen("create_account").ids.country_item.set_item(country_name)
         self.country_menu.dismiss()
 
-    # ---------- Auth (Supabase) ----------
+
+# ---------- Auth ----------
     def signup_action(self):
+
         if self.is_signing_up:
             toast("Please wait...")
             return
 
         screen = self.root.get_screen("create_account")
+
         first = screen.ids.first_name.text.strip()
         last = screen.ids.last_name.text.strip()
         email = screen.ids.email.text.strip().lower()
@@ -193,19 +224,16 @@ class MistApp(MDApp):
         cpwd = screen.ids.confirm_password.text
         terms = screen.ids.terms_check.active
 
-        # MDDropDownItem stores selection in .text
-        country = ""
-        try:
-            country = screen.ids.country_item.text.strip()
-        except Exception:
-            country = ""
+        country = screen.ids.country_item.text.strip()
 
         if not all([first, last, email, pwd, cpwd]):
             toast("Fill all fields")
             return
+
         if pwd != cpwd:
             toast("Passwords do not match")
             return
+
         if not terms:
             toast("Accept terms")
             return
@@ -214,16 +242,15 @@ class MistApp(MDApp):
         self.set_signup_status("Creating account...")
 
         def worker():
+
             try:
                 auth_resp = supabase.auth.sign_up({"email": email, "password": pwd})
                 user = auth_resp.user
 
                 if not user:
                     self._toast("Sign up failed")
-                    self.set_signup_status("Sign up failed.")
                     return
 
-                # Insert profile row
                 supabase.table("profiles").insert(
                     {
                         "id": user.id,
@@ -234,35 +261,33 @@ class MistApp(MDApp):
                 ).execute()
 
                 self._toast("Account created. Please sign in.")
-                self.set_signup_status("Account created. Please sign in.")
                 self._go("signin")
 
             except Exception as e:
+
                 msg = str(e).lower()
 
-                if "over_email_send_rate_limit" in msg or "too many requests" in msg or " 429" in msg:
-                    self._toast("Too many signups. Try again in a few minutes.")
-                    self.set_signup_status("Too many signups. Try again in a few minutes.")
-                elif "already" in msg and ("registered" in msg or "exists" in msg):
+                if "already" in msg and ("registered" in msg or "exists" in msg):
                     self._toast("Email already exists. Please sign in.")
-                    self.set_signup_status("Email already exists. Please sign in.")
                     self._go("signin")
+
                 else:
                     self._toast(f"Signup error: {str(e)}")
-                    self.set_signup_status(f"Signup error: {str(e)}")
 
             finally:
                 self.is_signing_up = False
-                Clock.schedule_once(lambda dt: self.set_signup_status(" "), 2)
 
         threading.Thread(target=worker, daemon=True).start()
 
+
     def signin_action(self):
+
         if self.is_signing_in:
             toast("Please wait...")
             return
 
         screen = self.root.get_screen("signin")
+
         email = screen.ids.signin_email.text.strip().lower()
         pwd = screen.ids.signin_password.text
 
@@ -274,13 +299,16 @@ class MistApp(MDApp):
         self.set_signin_status("Signing in...")
 
         def worker():
+
             try:
-                auth_resp = supabase.auth.sign_in_with_password({"email": email, "password": pwd})
+                auth_resp = supabase.auth.sign_in_with_password(
+                    {"email": email, "password": pwd}
+                )
+
                 user = auth_resp.user
 
                 if not user:
                     self._toast("Login failed")
-                    self.set_signin_status("Login failed.")
                     return
 
                 self.current_user = user
@@ -294,31 +322,34 @@ class MistApp(MDApp):
                         .execute()
                         .data
                     )
+
                 except Exception:
                     profile = None
 
                 self.current_profile = profile or {}
+
                 first_name = (self.current_profile.get("first_name") or "").strip()
 
                 self._toast(f"Welcome {first_name}" if first_name else "Welcome")
-                self.set_signin_status(" ")
+
                 self._go("home")
 
             except Exception as e:
+
                 msg = str(e).lower()
+
                 if "invalid" in msg or "credentials" in msg or "401" in msg:
                     self._toast("Incorrect email or password")
-                    self.set_signin_status("Incorrect email or password")
+
                 else:
                     self._toast(f"Signin error: {str(e)}")
-                    self.set_signin_status(f"Signin error: {str(e)}")
 
             finally:
                 self.is_signing_in = False
-                Clock.schedule_once(lambda dt: self.set_signin_status(" "), 2)
 
         threading.Thread(target=worker, daemon=True).start()
 
 
+# ---------- Run App ----------
 if __name__ == "__main__":
     MistApp().run()
