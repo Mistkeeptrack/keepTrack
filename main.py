@@ -1,6 +1,8 @@
 import threading
 import logging
 
+import pycountry
+
 import os
 from kivy.resources import resource_add_path
 
@@ -24,6 +26,8 @@ from supabase_client import supabase
 Window.size = (360, 640)
 Window.icon = os.path.join(BASE_DIR, "assets", "images", "mistlogo.ico")   # ✅ FIXED ICON
 
+Window.set_icon("static/blank.ico")  # ✅ Hides the default Kivy icon
+Window.title = ""
 # Reduce noisy HTTP logs
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
@@ -100,6 +104,7 @@ class TaskScreen(Screen):
 
 # ---------- App ----------
 class MistApp(MDApp):
+       
     # IMPORTANT: Define these as Kivy Properties so KV can read them during load
     is_signing_up = BooleanProperty(False)
     is_signing_in = BooleanProperty(False)
@@ -125,17 +130,16 @@ class MistApp(MDApp):
         # --- Country dropdown menu ---
         create_screen = root.get_screen("create_account")
         menu_items = [
-            {"text": "USA", "on_release": lambda x="USA": self.set_country(x)},
-            {"text": "Nigeria", "on_release": lambda x="Nigeria": self.set_country(x)},
-            {"text": "UK", "on_release": lambda x="UK": self.set_country(x)},
-            {"text": "Canada", "on_release": lambda x="Canada": self.set_country(x)},
+            {"text": country.name, "on_release": lambda x=country.name: self.set_country(x),}
+        
+            for country in pycountry.countries
         ]
         self.country_menu = MDDropdownMenu(
             caller=create_screen.ids.country_item,
             items=menu_items,
             width_mult=4,
         )
-
+        create_screen.ids.country_item.text = "United Kingdom"
         return root
 
     # ---------- UI helpers ----------
