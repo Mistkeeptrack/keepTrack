@@ -22,6 +22,7 @@ from kivymd.toast import toast
 from supabase_client import supabase
 
 Window.size = (360, 640)
+Window.icon = os.path.join(BASE_DIR, "assets", "images", "mistlogo.ico")   # ✅ FIXED ICON
 
 # Reduce noisy HTTP logs
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -106,6 +107,8 @@ class MistApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = "Light"
 
+# Remove the "Mist" text from the window title bar
+        Window.set_title ("")
         # Load KV files
         Builder.load_file("kv/components.kv")
         Builder.load_file("kv/pages.kv")
@@ -246,7 +249,6 @@ class MistApp(MDApp):
 
             finally:
                 self.is_signing_up = False
-                # clear after a moment so user can read it
                 Clock.schedule_once(lambda dt: self.set_signup_status(" "), 2)
 
         threading.Thread(target=worker, daemon=True).start()
@@ -279,7 +281,6 @@ class MistApp(MDApp):
 
                 self.current_user = user
 
-                # Fetch profile (optional)
                 try:
                     profile = (
                         supabase.table("profiles")
