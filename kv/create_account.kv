@@ -29,11 +29,13 @@
 
                 MDDropDownItem:
                     id: country_item
-                    text: "USA"
+                    text: "United Kingdom"
                     size_hint_x: 1
-                    on_release: app.open_country_menu()
+                    on_release: app.open_country_search()
 
-                
+                Widget:
+                    size_hint_y: None
+                    height: dp(8)
 
                 MDLabel:
                     text: "FIRST NAME"
