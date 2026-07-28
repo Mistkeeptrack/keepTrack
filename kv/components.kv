@@ -1,3 +1,6 @@
+#:import dp kivy.metrics.dp
+
+
 <TileCard>:
     orientation: "vertical"
     size_hint: None, None
@@ -8,10 +11,17 @@
     canvas.before:
         Color:
             rgba: root.bg_rgba
+
         RoundedRectangle:
             pos: self.pos
             size: self.size
-            radius: [18, 18, 18, 18]
+            radius:
+                [
+                dp(18),
+                dp(18),
+                dp(18),
+                dp(18)
+                ]
 
     Widget:
         size_hint_y: 0.12
@@ -33,11 +43,14 @@
         font_style: "Subtitle1"
         theme_text_color: "Custom"
         text_color: 0, 0, 0, 1
+        text_size: self.width, None
         size_hint_y: None
         height: dp(45)
 
     Widget:
         size_hint_y: 0.12
+
+
 <BottomNav@MDBoxLayout>:
     size_hint_y: None
     height: dp(64)
@@ -47,20 +60,25 @@
 
     MDIconButton:
         icon: "navigation-variant-outline"
+        pos_hint: {"center_y": 0.5}
         on_release: app.go_to("navigation")
 
     MDIconButton:
         icon: "chat-outline"
+        pos_hint: {"center_y": 0.5}
         on_release: app.go_to("chat")
 
     MDIconButton:
         icon: "bell-outline"
+        pos_hint: {"center_y": 0.5}
         on_release: app.go_to("reminder")
 
     MDIconButton:
-        icon: "bluetooth"
-        on_release: app.go_to("pairing")
+        icon: "note-multiple-outline"
+        pos_hint: {"center_y": 0.5}
+        on_release: app.go_to("tasks")
 
     MDIconButton:
         icon: "vector-square"
-        on_release: app.go_to("org")        
+        pos_hint: {"center_y": 0.5}
+        on_release: app.go_to("org")

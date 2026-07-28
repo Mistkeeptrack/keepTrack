@@ -1,9 +1,11 @@
 #:import dp kivy.metrics.dp
 
+
 <DesiredHomeScreen>:
     name: "home"
 
     MDBoxLayout:
+        orientation: "vertical"
         md_bg_color: 1, 1, 1, 1
 
         AnchorLayout:
@@ -30,14 +32,19 @@
                         source: "assets/images/mistlogo.jpeg"
                         size_hint: None, None
                         size: dp(64), dp(64)
-                        radius: [32, 32, 32, 32]
+                        radius: [dp(32), dp(32), dp(32), dp(32)]
 
                     MDBoxLayout:
                         orientation: "vertical"
                         padding: 0, dp(4), 0, 0
 
                         MDLabel:
-                            text: ""
+                            text:
+                                (
+                                app.current_profile.get("first_name", "")
+                                if app.current_profile
+                                else "M.I.S.T"
+                                )
                             bold: True
                             font_style: "H4"
                             theme_text_color: "Custom"
@@ -46,7 +53,7 @@
                             height: self.texture_size[1]
 
                         MDLabel:
-                            text: ""
+                            text: "KeepTrack"
                             font_style: "Subtitle1"
                             theme_text_color: "Custom"
                             text_color: 0, 0, 0, 1
@@ -66,7 +73,7 @@
                         MDCard:
                             size_hint: None, None
                             size: dp(150), dp(150)
-                            radius: [18, 18, 18, 18]
+                            radius: [dp(18), dp(18), dp(18), dp(18)]
                             md_bg_color: 0.66, 0.45, 0.95, 1
                             ripple_behavior: True
                             on_release: app.go_to("navigation")
@@ -102,7 +109,7 @@
                         MDCard:
                             size_hint: None, None
                             size: dp(150), dp(150)
-                            radius: [18, 18, 18, 18]
+                            radius: [dp(18), dp(18), dp(18), dp(18)]
                             md_bg_color: 0.96, 0.55, 0.55, 1
                             ripple_behavior: True
                             on_release: app.go_to("chat")
@@ -138,7 +145,7 @@
                         MDCard:
                             size_hint: None, None
                             size: dp(150), dp(150)
-                            radius: [18, 18, 18, 18]
+                            radius: [dp(18), dp(18), dp(18), dp(18)]
                             md_bg_color: 0.95, 0.80, 0.22, 1
                             ripple_behavior: True
                             on_release: app.go_to("reminder")
@@ -174,7 +181,7 @@
                         MDCard:
                             size_hint: None, None
                             size: dp(150), dp(150)
-                            radius: [18, 18, 18, 18]
+                            radius: [dp(18), dp(18), dp(18), dp(18)]
                             md_bg_color: 0.43, 0.75, 0.93, 1
                             ripple_behavior: True
                             on_release: app.go_to("tasks")
@@ -187,7 +194,7 @@
                                 Widget:
 
                                 MDIcon:
-                                    icon: "check-circle-outline"
+                                    icon: "note-multiple-outline"
                                     font_size: "44sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
@@ -210,7 +217,7 @@
                         MDCard:
                             size_hint: None, None
                             size: dp(150), dp(150)
-                            radius: [18, 18, 18, 18]
+                            radius: [dp(18), dp(18), dp(18), dp(18)]
                             md_bg_color: 0.40, 0.82, 0.58, 1
                             ripple_behavior: True
                             on_release: app.go_to("org")
@@ -238,6 +245,7 @@
                                     font_style: "Subtitle1"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
+                                    text_size: self.width, None
                                     size_hint_y: None
                                     height: dp(45)
 
@@ -246,7 +254,7 @@
                         MDCard:
                             size_hint: None, None
                             size: dp(150), dp(150)
-                            radius: [18, 18, 18, 18]
+                            radius: [dp(18), dp(18), dp(18), dp(18)]
                             md_bg_color: 0.40, 0.80, 0.76, 1
                             ripple_behavior: True
                             on_release: app.go_to("settings")
@@ -285,37 +293,191 @@
 
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: 1, 1, 1, 1
+        md_bg_color: 0.97, 0.97, 0.98, 1
 
         MDTopAppBar:
             title: "Navigation"
-            left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            elevation: 0
+            left_action_items:
+                [["arrow-left", lambda x: app.back_to_home()]]
+            right_action_items:
+                [["crosshairs-gps", lambda x: root.center_on_me()]]
 
-        MDBoxLayout:
-            orientation: "vertical"
-            padding: dp(20)
-            spacing: dp(20)
+        ScrollView:
+            do_scroll_x: False
+            bar_width: dp(3)
 
-            MDLabel:
-                id: compass_label
-                text: "Navigation Ready"
-                halign: "center"
-                font_style: "H4"
-                theme_text_color: "Custom"
-                text_color: 0, 0, 0, 1
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: dp(14), dp(10), dp(14), dp(18)
+                spacing: dp(10)
 
-            MDLabel:
-                id: location_label
-                text: "Tap Start Navigation"
-                halign: "center"
-                theme_text_color: "Hint"
+                MDCard:
+                    id: reservation_card
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: dp(104)
+                    padding: dp(14)
+                    spacing: dp(4)
+                    radius: [dp(14), dp(14), dp(14), dp(14)]
+                    elevation: 1
+                    ripple_behavior: True
+                    md_bg_color: 1, 0.96, 0.82, 1
+                    on_release: root.navigate_to_reservation()
 
-            MDRaisedButton:
-                text: "Start Navigation"
-                pos_hint: {"center_x": 0.5}
-                on_release: root.start_navigation()
+                    MDLabel:
+                        text: "YOUR NEXT BOOKING"
+                        font_size: "11sp"
+                        bold: True
+                        theme_text_color: "Custom"
+                        text_color: 0.55, 0.38, 0.02, 1
+                        size_hint_y: None
+                        height: dp(18)
+
+                    MDLabel:
+                        id: reservation_title
+                        text: "Checking reservations..."
+                        bold: True
+                        font_style: "Subtitle1"
+                        shorten: True
+                        size_hint_y: None
+                        height: dp(30)
+
+                    MDLabel:
+                        id: reservation_address
+                        text: ""
+                        font_size: "12sp"
+                        theme_text_color: "Hint"
+                        shorten: True
+                        size_hint_y: None
+                        height: dp(24)
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: dp(56)
+                    spacing: dp(8)
+
+                    MDTextField:
+                        id: destination_search
+                        hint_text: "Where do you want to go?"
+                        mode: "rectangle"
+                        multiline: False
+                        on_text_validate: root.search_destination()
+
+                    MDRaisedButton:
+                        text: "Go"
+                        size_hint_x: None
+                        width: dp(58)
+                        md_bg_color: 0.96, 0.67, 0.05, 1
+                        text_color: 0, 0, 0, 1
+                        on_release: root.search_destination()
+
+                MDCard:
+                    size_hint_y: None
+                    height: dp(270)
+                    radius: [dp(16), dp(16), dp(16), dp(16)]
+                    elevation: 1
+                    md_bg_color: 0.92, 0.92, 0.92, 1
+
+                    MDBoxLayout:
+                        id: map_box
+                        orientation: "vertical"
+
+                MDCard:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: dp(132)
+                    padding: dp(14)
+                    spacing: dp(6)
+                    radius: [dp(14), dp(14), dp(14), dp(14)]
+                    elevation: 0
+                    md_bg_color: 1, 1, 1, 1
+
+                    MDLabel:
+                        id: destination_label
+                        text: "Choose a destination"
+                        bold: True
+                        shorten: True
+                        size_hint_y: None
+                        height: dp(30)
+
+                    MDLabel:
+                        id: location_label
+                        text: "Location not started"
+                        font_size: "12sp"
+                        theme_text_color: "Hint"
+                        size_hint_y: None
+                        height: dp(24)
+
+                    MDBoxLayout:
+                        size_hint_y: None
+                        height: dp(45)
+
+                        MDBoxLayout:
+                            orientation: "vertical"
+
+                            MDLabel:
+                                text: "ETA"
+                                font_size: "11sp"
+                                theme_text_color: "Hint"
+
+                            MDLabel:
+                                id: eta_label
+                                text: "--"
+                                bold: True
+
+                        MDBoxLayout:
+                            orientation: "vertical"
+
+                            MDLabel:
+                                text: "DISTANCE"
+                                font_size: "11sp"
+                                theme_text_color: "Hint"
+
+                            MDLabel:
+                                id: distance_label
+                                text: "--"
+                                bold: True
+
+                        MDBoxLayout:
+                            orientation: "vertical"
+
+                            MDLabel:
+                                text: "STATUS"
+                                font_size: "11sp"
+                                theme_text_color: "Hint"
+
+                            MDLabel:
+                                id: route_status
+                                text: "Ready"
+                                bold: True
+                                shorten: True
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: dp(48)
+                    spacing: dp(8)
+
+                    MDRaisedButton:
+                        text: "Start GPS"
+                        on_release: root.start_navigation()
+
+                    MDFlatButton:
+                        text: "Stop"
+                        on_release: root.stop_navigation()
+
+                    MDRaisedButton:
+                        text: "Route"
+                        md_bg_color: 0.96, 0.67, 0.05, 1
+                        text_color: 0, 0, 0, 1
+                        on_release: root.calculate_route()
 
         BottomNav:
+
+
+
+
 <ChatScreen>:
     name: "chat"
 
@@ -325,16 +487,22 @@
 
         MDTopAppBar:
             title: "Chat"
-            left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            elevation: 0
+            left_action_items:
+                [["arrow-left", lambda x: app.back_to_home()]]
 
         MDTextField:
             id: search_contact
             hint_text: "Search Contact"
             mode: "rectangle"
             size_hint_x: 0.9
+            size_hint_y: None
+            height: dp(56)
             pos_hint: {"center_x": 0.5}
 
         ScrollView:
+            do_scroll_x: False
+
             MDList:
                 id: contact_list
 
@@ -351,8 +519,10 @@
             MDRaisedButton:
                 text: "Delete from list"
                 on_release: root.delete_contact()
-        
+
         BottomNav:
+
+
 <TaskScreen>:
     name: "tasks"
 
@@ -387,9 +557,265 @@
 
             ScrollView:
                 do_scroll_x: False
+                bar_width: dp(3)
 
                 MDBoxLayout:
                     id: notes_list
                     orientation: "vertical"
                     adaptive_height: True
-                    spacing: dp(7)        
+                    spacing: dp(7)
+
+
+<NoteEditorScreen>:
+    name: "note_editor"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 1, 1, 1, 1
+
+        MDTopAppBar:
+            title: ""
+            elevation: 0
+            md_bg_color: 1, 1, 1, 1
+            specific_text_color: 0, 0, 0, 1
+
+            left_action_items:
+                [["chevron-left", lambda x: root.close_editor()]]
+
+            right_action_items:
+                [["delete-outline", lambda x: root.confirm_delete()]]
+
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: dp(16), dp(4), dp(16), dp(16)
+            spacing: dp(3)
+
+            MDTextField:
+                id: note_title
+                hint_text: "Title"
+                multiline: False
+                mode: "rectangle"
+                font_size: "24sp"
+                size_hint_y: None
+                height: dp(65)
+                on_text: root.note_changed()
+
+            MDLabel:
+                id: note_date
+                text: ""
+                font_size: "12sp"
+                theme_text_color: "Hint"
+                size_hint_y: None
+                height: dp(25)
+
+            MDTextField:
+                id: note_body
+                hint_text: "Start typing..."
+                multiline: True
+                mode: "rectangle"
+                font_size: "17sp"
+                size_hint_y: 1
+                on_text: root.note_changed()
+
+
+<ReminderScreen>:
+    name: "reminder"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 1, 1, 1, 1
+
+        MDTopAppBar:
+            title: "Reminders"
+            elevation: 0
+            left_action_items:
+                [["arrow-left", lambda x: app.back_to_home()]]
+
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: dp(18)
+            spacing: dp(14)
+
+            MDCard:
+                orientation: "vertical"
+                size_hint_y: None
+                height: dp(150)
+                padding: dp(18)
+                spacing: dp(8)
+                radius: [dp(16), dp(16), dp(16), dp(16)]
+                elevation: 1
+                md_bg_color: 1, 0.96, 0.82, 1
+
+                MDIcon:
+                    icon: "bell-outline"
+                    halign: "center"
+                    font_size: "42sp"
+                    theme_text_color: "Custom"
+                    text_color: 0.8, 0.55, 0.05, 1
+
+                MDLabel:
+                    text: "Your reminders"
+                    halign: "center"
+                    bold: True
+                    font_style: "H6"
+
+                MDLabel:
+                    text: "Reminder features can be added here."
+                    halign: "center"
+                    theme_text_color: "Hint"
+
+            Widget:
+
+        BottomNav:
+
+
+<OrgScreen>:
+    name: "org"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 1, 1, 1, 1
+
+        MDTopAppBar:
+            title: "Discover Services"
+            elevation: 0
+            left_action_items:
+                [["arrow-left", lambda x: app.back_to_home()]]
+
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: dp(18)
+            spacing: dp(14)
+
+            MDTextField:
+                id: service_search
+                hint_text: "Search services or organisations"
+                mode: "rectangle"
+                size_hint_y: None
+                height: dp(56)
+
+            MDCard:
+                orientation: "vertical"
+                size_hint_y: None
+                height: dp(170)
+                padding: dp(18)
+                spacing: dp(8)
+                radius: [dp(16), dp(16), dp(16), dp(16)]
+                elevation: 1
+                md_bg_color: 0.88, 0.98, 0.91, 1
+
+                MDIcon:
+                    icon: "vector-square"
+                    halign: "center"
+                    font_size: "44sp"
+                    theme_text_color: "Custom"
+                    text_color: 0.12, 0.55, 0.32, 1
+
+                MDLabel:
+                    text: "Discover local services"
+                    halign: "center"
+                    bold: True
+                    font_style: "H6"
+
+                MDLabel:
+                    text: "Restaurants, hotels, salons, events and organisations will appear here."
+                    halign: "center"
+                    theme_text_color: "Hint"
+                    text_size: self.width, None
+
+            Widget:
+
+        BottomNav:
+
+
+<SettingsScreen>:
+    name: "settings"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 1, 1, 1, 1
+
+        MDTopAppBar:
+            title: "Settings"
+            elevation: 0
+            left_action_items:
+                [["arrow-left", lambda x: app.back_to_home()]]
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: dp(18)
+                spacing: dp(10)
+
+                MDLabel:
+                    text: "Account"
+                    bold: True
+                    font_style: "H6"
+                    size_hint_y: None
+                    height: dp(42)
+
+                OneLineIconListItem:
+                    text:
+                        (
+                        (
+                        app.current_profile.get("first_name", "")
+                        + " "
+                        + app.current_profile.get("last_name", "")
+                        ).strip()
+                        if app.current_profile
+                        else "M.I.S.T user"
+                        )
+
+                    IconLeftWidget:
+                        icon: "account-outline"
+
+                OneLineIconListItem:
+                    text: "Notifications"
+
+                    IconLeftWidget:
+                        icon: "bell-outline"
+
+                OneLineIconListItem:
+                    text: "Appearance"
+
+                    IconLeftWidget:
+                        icon: "theme-light-dark"
+
+                OneLineIconListItem:
+                    text: "Privacy and security"
+
+                    IconLeftWidget:
+                        icon: "shield-lock-outline"
+
+                OneLineIconListItem:
+                    text: "Help and support"
+
+                    IconLeftWidget:
+                        icon: "help-circle-outline"
+
+                OneLineIconListItem:
+                    text: "About M.I.S.T KeepTrack"
+
+                    IconLeftWidget:
+                        icon: "information-outline"
+
+                Widget:
+                    size_hint_y: None
+                    height: dp(20)
+
+                MDRaisedButton:
+                    text: "Sign Out"
+                    size_hint_x: 0.75
+                    height: dp(48)
+                    pos_hint: {"center_x": 0.5}
+                    md_bg_color: 0.86, 0.18, 0.18, 1
+                    on_release: app.sign_out()
+
+                Widget:
+                    size_hint_y: None
+                    height: dp(30)
+
+        BottomNav:     
