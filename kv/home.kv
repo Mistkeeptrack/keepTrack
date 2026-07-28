@@ -1,84 +1,104 @@
 <HomeScreen>:
     name: "home"
+
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: 1,1,1,1
-        padding: dp(18)
+        md_bg_color: 0.95, 0.95, 0.95, 1
+        padding: dp(16)
         spacing: dp(14)
 
-        # Top row like your design
-        BoxLayout:
+        MDTopAppBar:
+            title: ""
+            elevation: 0
+            md_bg_color: 0.95, 0.95, 0.95, 1
+            left_action_items: [["lock-outline", lambda x: None]]
+            right_action_items: [["plus-box-outline", lambda x: None], ["menu", lambda x: None]]
+
+        MDBoxLayout:
             size_hint_y: None
-            height: dp(44)
-
-            BoxLayout:
-                size_hint_x: 0.7
-                spacing: dp(10)
-                padding: 0, dp(8), 0, 0
-
-               
-
-        # Profile row
-        BoxLayout:
-            size_hint_y: None
-            height: dp(60)
-            spacing: dp(12)
-
-            Avatar:
-                size_hint: None, None
-                size: dp(44), dp(44)
-
-            BoxLayout:
-                orientation: "vertical"
-                spacing: dp(2)
-                padding: 0, dp(6), 0, 0
-
-              
-        # Tiles
-        GridLayout:
-            cols: 2
+            height: dp(90)
             spacing: dp(14)
-            row_default_height: dp(140)
-            row_force_default: True
 
-            TileCard:
-                title: "Navigation"
-                icon_source: "assets/images/nav.png"
-                icon_text: "➤"
-                bg_hex: "B79BFF"
-                on_release: app.go_to("navigation")
+            FloatLayout:
+                size_hint_x: None
+                width: dp(72)
 
-            TileCard:
-                title: "Chat"
-                icon_source: "assets/images/chat.png"
-                icon_text: "💬"
-                bg_hex: "FF9C9C"
-                on_release: app.go_to("chat")
+                AsyncImage:
+                    source: "assets/images/nav.png"
+                    size_hint: None, None
+                    size: dp(62), dp(62)
+                    pos_hint: {"x": 0.0, "center_y": 0.5}
+                    allow_stretch: True
+                    keep_ratio: True
 
-            TileCard:
-                title: "Reminder"
-                icon_source: "assets/images/Reminder.png"
-                icon_text: "🗓"
-                bg_hex: "F5D24B"
-                on_release: app.go_to("reminder")
+                MDIconButton:
+                    icon: "plus-circle"
+                    theme_text_color: "Custom"
+                    text_color: 0.18, 0.45, 0.95, 1
+                    pos_hint: {"right": 1, "y": 0.0}
 
+            MDBoxLayout:
+                orientation: "vertical"
+                padding: 0, dp(10), 0, 0
 
-            TileCard:
-                title: "Connect to organization"
-                icon_source: "assets/images/connection.png"
-                icon_text: "⛓"
-                bg_hex: "65E0A0"
-                on_release: app.go_to("org")
+                MDLabel:
+                    text: "MIST"
+                    font_style: "H4"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 0, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
 
-            TileCard:
-                title: "Settings"
-                icon_source: "assets/images/setting.png"
-                icon_text: "⚙"
-                bg_hex: "56E1D6"
-                on_release: app.go_to("settings")
-            
-            TileCard:
-                title: "Tasks"
-                icon_text: "✅"
-                bg_hex: "E7F0FF"
-                on_release: app.go_to("tasks")
+                MDLabel:
+                    text: "IT Entrepreneur"
+                    font_style: "Subtitle1"
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 0, 1
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+        ScrollView:
+            do_scroll_x: False
+
+            MDGridLayout:
+                cols: 2
+                adaptive_height: True
+                spacing: dp(16)
+                padding: 0, dp(8), 0, dp(24)
+
+                TileCard:
+                    title: "Navigation"
+                    icon_text: "navigation-variant-outline"
+                    bg_hex: "A97AF7"
+                    on_release: app.go_to("navigation")
+
+                TileCard:
+                    title: "Chat"
+                    icon_text: "chat-outline"
+                    bg_hex: "F59B97"
+                    on_release: app.go_to("chat")
+
+                TileCard:
+                    title: "Reminder"
+                    icon_text: "bell-badge-outline"
+                    bg_hex: "F2D13D"
+                    on_release: app.go_to("reminder")
+
+                TileCard:
+                    title: "Task"
+                    icon_text: "task"
+                    bg_hex: "73C2F0"
+                    on_release: app.go_to("task")
+
+                TileCard:
+                    title: "Connect to organization"
+                    icon_text: "vector-square"
+                    bg_hex: "63D39A"
+                    on_release: app.go_to("organization")
+
+                TileCard:
+                    title: "Settings"
+                    icon_text: "cog-outline"
+                    bg_hex: "6BD1C8"
+                    on_release: app.go_to("settings")

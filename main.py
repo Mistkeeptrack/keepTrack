@@ -110,11 +110,23 @@ class OrgScreen(Screen):
 class SettingsScreen(Screen):
     pass
 
+class TaskScreen(Screen):
+    pass
+
 
 class TaskScreen(Screen):
     def on_enter(self, *args):
         print("Task screen opened")
 
+class KeepTrackApp(MDApp):
+    def build(self):
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "Blue"
+        return Builder.load_file("keeptrack.kv")
+
+    def back_to_home(self):
+        self.root.current = "home"
+        #return Builder.load_file("keeptrack.kv")
 
 # ---------- App ----------
 class MistApp(MDApp):
@@ -135,7 +147,7 @@ class MistApp(MDApp):
         Builder.load_file("kv/splash.kv")
         Builder.load_file("kv/create_account.kv")
         Builder.load_file("kv/signin.kv")
-        Builder.load_file("kv/home.kv")
+        #Builder.load_file("kv/home.kv")
         root = Builder.load_file("kv/main.kv")
 
         # Session info

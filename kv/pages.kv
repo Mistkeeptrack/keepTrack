@@ -1,10 +1,276 @@
+#:import dp kivy.metrics.dp
+
+<HomeScreen>:
+    name: "home"
+
+    MDBoxLayout:
+        md_bg_color: 0.95, 0.95, 0.95, 1
+
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "top"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                size_hint: None, None
+                width: dp(360)
+                height: self.minimum_height
+                padding: dp(16)
+                spacing: dp(12)
+
+                MDTopAppBar:
+                    title: ""
+                    elevation: 0
+                    md_bg_color: 0.95, 0.95, 0.95, 1
+                    left_action_items: [["lock-outline", lambda x: None]]
+                    right_action_items: [["plus-box-outline", lambda x: None], ["menu", lambda x: None]]
+
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: dp(90)
+                    spacing: dp(14)
+
+                    FloatLayout:
+                        size_hint_x: None
+                        width: dp(72)
+
+                        FitImage:
+                            source: "assets/images/nav.png"
+                            size_hint: None, None
+                            size: dp(62), dp(62)
+                            pos_hint: {"x": 0.0, "center_y": 0.5}
+                            radius: [31, 31, 31, 31]
+
+                        MDIconButton:
+                            icon: "plus-circle"
+                            theme_text_color: "Custom"
+                            text_color: 0.18, 0.45, 0.95, 1
+                            pos_hint: {"right": 1, "y": 0.0}
+
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        padding: 0, dp(10), 0, 0
+
+                        MDLabel:
+                            text: "MIST"
+                            bold: True
+                            font_style: "H4"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: self.texture_size[1]
+
+                        MDLabel:
+                            text: "IT Entrepreneur"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0, 0, 1
+                            font_style: "Subtitle1"
+                            size_hint_y: None
+                            height: self.texture_size[1]
+
+                ScrollView:
+                    do_scroll_x: False
+                    bar_width: 0
+
+                    MDGridLayout:
+                        cols: 2
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(16)
+                        padding: 0, dp(8), 0, dp(24)
+
+                        MDCard:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: dp(210)
+                            padding: dp(16)
+                            spacing: dp(16)
+                            radius: [24, 24, 24, 24]
+                            md_bg_color: 0.67, 0.48, 0.97, 1
+                            ripple_behavior: True
+                            on_release: app.root.current = "navigation"
+
+                            MDIcon:
+                                icon: "navigation-variant-outline"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_size: "54sp"
+
+                            Widget:
+
+                            MDLabel:
+                                text: "Navigation"
+                                halign: "center"
+                                bold: True
+                                font_style: "H5"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                        MDCard:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: dp(210)
+                            padding: dp(16)
+                            spacing: dp(16)
+                            radius: [24, 24, 24, 24]
+                            md_bg_color: 0.96, 0.58, 0.57, 1
+                            ripple_behavior: True
+                            on_release: app.root.current = "chat"
+
+                            MDIcon:
+                                icon: "chat-outline"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_size: "54sp"
+
+                            Widget:
+
+                            MDLabel:
+                                text: "Chat"
+                                halign: "center"
+                                bold: True
+                                font_style: "H5"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                        MDCard:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: dp(210)
+                            padding: dp(16)
+                            spacing: dp(16)
+                            radius: [24, 24, 24, 24]
+                            md_bg_color: 0.94, 0.81, 0.24, 1
+                            ripple_behavior: True
+                            on_release: app.root.current = "reminder"
+
+                            MDIcon:
+                                icon: "bell-badge-outline"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_size: "54sp"
+
+                            Widget:
+
+                            MDLabel:
+                                text: "Reminder"
+                                halign: "center"
+                                bold: True
+                                font_style: "H5"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                        MDCard:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: dp(210)
+                            padding: dp(16)
+                            spacing: dp(16)
+                            radius: [24, 24, 24, 24]
+                            md_bg_color: 0.43, 0.76, 0.94, 1
+                            ripple_behavior: True
+                            on_release: app.root.current = "pairing"
+
+                            MDIcon:
+                                icon: "bluetooth"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_size: "54sp"
+
+                            Widget:
+
+                            MDLabel:
+                                text: "Device Pairing"
+                                halign: "center"
+                                bold: True
+                                font_style: "H5"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                        MDCard:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: dp(210)
+                            padding: dp(16)
+                            spacing: dp(16)
+                            radius: [24, 24, 24, 24]
+                            md_bg_color: 0.39, 0.82, 0.60, 1
+                            ripple_behavior: True
+                            on_release: app.root.current = "org"
+
+                            MDIcon:
+                                icon: "vector-square"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_size: "54sp"
+
+                            Widget:
+
+                            MDLabel:
+                                text: "Connect to\norganization"
+                                halign: "center"
+                                bold: True
+                                font_style: "H5"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+                        MDCard:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: dp(210)
+                            padding: dp(16)
+                            spacing: dp(16)
+                            radius: [24, 24, 24, 24]
+                            md_bg_color: 0.40, 0.81, 0.78, 1
+                            ripple_behavior: True
+                            on_release: app.root.current = "settings"
+
+                            MDIcon:
+                                icon: "cog-outline"
+                                halign: "center"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                font_size: "54sp"
+
+                            Widget:
+
+                            MDLabel:
+                                text: "Settings"
+                                halign: "center"
+                                bold: True
+                                font_style: "H5"
+                                theme_text_color: "Custom"
+                                text_color: 0, 0, 0, 1
+                                size_hint_y: None
+                                height: self.texture_size[1]
+
+
 <NavigationScreen>:
     name: "navigation"
     MDBoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
             title: "Navigation"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.67, 0.48, 0.97, 1
+            specific_text_color: 1, 1, 1, 1
+
         MDLabel:
             text: "Navigation page"
             halign: "center"
@@ -14,9 +280,13 @@
     name: "chat"
     MDBoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
             title: "Chat"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.96, 0.58, 0.57, 1
+            specific_text_color: 1, 1, 1, 1
+
         MDLabel:
             text: "Chat page"
             halign: "center"
@@ -26,23 +296,31 @@
     name: "reminder"
     MDBoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
             title: "Reminder"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.94, 0.81, 0.24, 1
+            specific_text_color: 0, 0, 0, 1
+
         MDLabel:
             text: "Reminder page"
             halign: "center"
 
 
-<PairingScreen>:
-    name: "pairing"
+<TaskScreen>:
+    name: "Tasks"
     MDBoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
-            title: "Device Pairing"
+            title: "Tasks"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.43, 0.76, 0.94, 1
+            specific_text_color: 0, 0, 0, 1
+
         MDLabel:
-            text: "Pairing page"
+            text: "TaskScreen page"
             halign: "center"
 
 
@@ -50,9 +328,13 @@
     name: "org"
     MDBoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
             title: "Connect to Organization"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.39, 0.82, 0.60, 1
+            specific_text_color: 0, 0, 0, 1
+
         MDLabel:
             text: "Organization page"
             halign: "center"
@@ -62,12 +344,18 @@
     name: "settings"
     MDBoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
             title: "Settings"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.40, 0.81, 0.78, 1
+            specific_text_color: 0, 0, 0, 1
+
         MDLabel:
             text: "Settings page"
             halign: "center"
+
+
 <TaskScreen>:
     name: "tasks"
     MDBoxLayout:
@@ -76,6 +364,8 @@
         MDTopAppBar:
             title: "Tasks"
             left_action_items: [["arrow-left", lambda x: app.back_to_home()]]
+            md_bg_color: 0.20, 0.67, 0.32, 1
+            specific_text_color: 1, 1, 1, 1
 
         MDLabel:
             id: status_label
