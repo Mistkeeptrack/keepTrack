@@ -16,49 +16,33 @@
                 orientation: "vertical"
                 size_hint_x: None
                 width: dp(360)
-                padding: dp(24)
-                spacing: dp(20)
+                padding: dp(12)
+                spacing: dp(8)
 
                 Widget:
                     size_hint_y: None
-                    height: dp(20)
+                    height: dp(4)
 
+                # Logo header
                 MDBoxLayout:
                     size_hint_y: None
-                    height: dp(80)
-                    spacing: dp(16)
+                    height: dp(56)
+
+                    Widget:
 
                     FitImage:
                         source: "assets/images/mistlogo.jpeg"
                         size_hint: None, None
-                        size: dp(64), dp(64)
-                        radius: [dp(32), dp(32), dp(32), dp(32)]
+                        size: dp(52), dp(52)
+                        radius:
+                            [
+                            dp(12),
+                            dp(12),
+                            dp(12),
+                            dp(12)
+                            ]
 
-                    MDBoxLayout:
-                        orientation: "vertical"
-                        padding: 0, dp(4), 0, 0
-
-                        MDLabel:
-                            text:
-                                (
-                                app.current_profile.get("first_name", "")
-                                if app.current_profile
-                                else "M.I.S.T"
-                                )
-                            bold: True
-                            font_style: "H4"
-                            theme_text_color: "Custom"
-                            text_color: 0, 0, 0, 1
-                            size_hint_y: None
-                            height: self.texture_size[1]
-
-                        MDLabel:
-                            text: "KeepTrack"
-                            font_style: "Subtitle1"
-                            theme_text_color: "Custom"
-                            text_color: 0, 0, 0, 1
-                            size_hint_y: None
-                            height: self.texture_size[1]
+                    Widget:
 
                 ScrollView:
                     do_scroll_x: False
@@ -66,224 +50,277 @@
 
                     MDGridLayout:
                         cols: 2
-                        spacing: dp(20)
-                        padding: 0, dp(10), 0, dp(30)
+                        spacing: dp(10)
+                        padding: dp(16), dp(4), dp(16), dp(8)
                         adaptive_height: True
 
+                        # Navigation
                         MDCard:
                             size_hint: None, None
-                            size: dp(150), dp(150)
-                            radius: [dp(18), dp(18), dp(18), dp(18)]
+                            size: dp(140), dp(105)
+                            radius:
+                                [
+                                dp(14),
+                                dp(14),
+                                dp(14),
+                                dp(14)
+                                ]
                             md_bg_color: 0.66, 0.45, 0.95, 1
+                            elevation: 0
                             ripple_behavior: True
                             on_release: app.go_to("navigation")
 
                             MDBoxLayout:
                                 orientation: "vertical"
-                                padding: dp(12)
-                                spacing: dp(6)
+                                padding: dp(6)
+                                spacing: dp(2)
 
                                 Widget:
 
                                 MDIcon:
                                     icon: "navigation-variant-outline"
-                                    font_size: "44sp"
+                                    font_size: "28sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(50)
+                                    height: dp(34)
 
                                 MDLabel:
                                     text: "Navigation"
                                     halign: "center"
+                                    valign: "center"
                                     bold: True
-                                    font_style: "Subtitle1"
+                                    font_style: "Subtitle2"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(32)
+                                    height: dp(26)
 
                                 Widget:
 
+                        # Chat
                         MDCard:
                             size_hint: None, None
-                            size: dp(150), dp(150)
-                            radius: [dp(18), dp(18), dp(18), dp(18)]
+                            size: dp(140), dp(105)
+                            radius:
+                                [
+                                dp(14),
+                                dp(14),
+                                dp(14),
+                                dp(14)
+                                ]
                             md_bg_color: 0.96, 0.55, 0.55, 1
+                            elevation: 0
                             ripple_behavior: True
                             on_release: app.go_to("chat")
 
                             MDBoxLayout:
                                 orientation: "vertical"
-                                padding: dp(12)
-                                spacing: dp(6)
+                                padding: dp(6)
+                                spacing: dp(2)
 
                                 Widget:
 
                                 MDIcon:
                                     icon: "chat-outline"
-                                    font_size: "44sp"
+                                    font_size: "28sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(50)
+                                    height: dp(34)
 
                                 MDLabel:
                                     text: "Chat"
                                     halign: "center"
+                                    valign: "center"
                                     bold: True
-                                    font_style: "Subtitle1"
+                                    font_style: "Subtitle2"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(32)
+                                    height: dp(26)
 
                                 Widget:
 
+                        # Reminder
                         MDCard:
                             size_hint: None, None
-                            size: dp(150), dp(150)
-                            radius: [dp(18), dp(18), dp(18), dp(18)]
+                            size: dp(140), dp(105)
+                            radius:
+                                [
+                                dp(14),
+                                dp(14),
+                                dp(14),
+                                dp(14)
+                                ]
                             md_bg_color: 0.95, 0.80, 0.22, 1
+                            elevation: 0
                             ripple_behavior: True
                             on_release: app.go_to("reminder")
 
                             MDBoxLayout:
                                 orientation: "vertical"
-                                padding: dp(12)
-                                spacing: dp(6)
+                                padding: dp(6)
+                                spacing: dp(2)
 
                                 Widget:
 
                                 MDIcon:
                                     icon: "bell-outline"
-                                    font_size: "44sp"
+                                    font_size: "28sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(50)
+                                    height: dp(34)
 
                                 MDLabel:
                                     text: "Reminder"
                                     halign: "center"
+                                    valign: "center"
                                     bold: True
-                                    font_style: "Subtitle1"
+                                    font_style: "Subtitle2"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(32)
+                                    height: dp(26)
 
                                 Widget:
 
+                        # Tasks
                         MDCard:
                             size_hint: None, None
-                            size: dp(150), dp(150)
-                            radius: [dp(18), dp(18), dp(18), dp(18)]
+                            size: dp(140), dp(105)
+                            radius:
+                                [
+                                dp(14),
+                                dp(14),
+                                dp(14),
+                                dp(14)
+                                ]
                             md_bg_color: 0.43, 0.75, 0.93, 1
+                            elevation: 0
                             ripple_behavior: True
                             on_release: app.go_to("tasks")
 
                             MDBoxLayout:
                                 orientation: "vertical"
-                                padding: dp(12)
-                                spacing: dp(6)
+                                padding: dp(6)
+                                spacing: dp(2)
 
                                 Widget:
 
                                 MDIcon:
                                     icon: "note-multiple-outline"
-                                    font_size: "44sp"
+                                    font_size: "28sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(50)
+                                    height: dp(34)
 
                                 MDLabel:
                                     text: "Tasks"
                                     halign: "center"
+                                    valign: "center"
                                     bold: True
-                                    font_style: "Subtitle1"
+                                    font_style: "Subtitle2"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(40)
+                                    height: dp(26)
 
                                 Widget:
 
+                        # Discover
                         MDCard:
                             size_hint: None, None
-                            size: dp(150), dp(150)
-                            radius: [dp(18), dp(18), dp(18), dp(18)]
+                            size: dp(140), dp(105)
+                            radius:
+                                [
+                                dp(14),
+                                dp(14),
+                                dp(14),
+                                dp(14)
+                                ]
                             md_bg_color: 0.40, 0.82, 0.58, 1
+                            elevation: 0
                             ripple_behavior: True
                             on_release: app.go_to("org")
 
                             MDBoxLayout:
                                 orientation: "vertical"
-                                padding: dp(12)
-                                spacing: dp(6)
+                                padding: dp(6)
+                                spacing: dp(2)
 
                                 Widget:
 
                                 MDIcon:
                                     icon: "vector-square"
-                                    font_size: "44sp"
+                                    font_size: "28sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(50)
+                                    height: dp(34)
 
                                 MDLabel:
-                                    text: "Discover Services"
+                                    text: "Discover"
                                     halign: "center"
+                                    valign: "center"
                                     bold: True
-                                    font_style: "Subtitle1"
+                                    font_style: "Subtitle2"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
-                                    text_size: self.width, None
                                     size_hint_y: None
-                                    height: dp(45)
+                                    height: dp(26)
 
                                 Widget:
 
+                        # Settings
                         MDCard:
                             size_hint: None, None
-                            size: dp(150), dp(150)
-                            radius: [dp(18), dp(18), dp(18), dp(18)]
+                            size: dp(140), dp(105)
+                            radius:
+                                [
+                                dp(14),
+                                dp(14),
+                                dp(14),
+                                dp(14)
+                                ]
                             md_bg_color: 0.40, 0.80, 0.76, 1
+                            elevation: 0
                             ripple_behavior: True
                             on_release: app.go_to("settings")
 
                             MDBoxLayout:
                                 orientation: "vertical"
-                                padding: dp(12)
-                                spacing: dp(6)
+                                padding: dp(6)
+                                spacing: dp(2)
 
                                 Widget:
 
                                 MDIcon:
                                     icon: "cog-outline"
-                                    font_size: "44sp"
+                                    font_size: "28sp"
                                     halign: "center"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(50)
+                                    height: dp(34)
 
                                 MDLabel:
                                     text: "Settings"
                                     halign: "center"
+                                    valign: "center"
                                     bold: True
-                                    font_style: "Subtitle1"
+                                    font_style: "Subtitle2"
                                     theme_text_color: "Custom"
                                     text_color: 0, 0, 0, 1
                                     size_hint_y: None
-                                    height: dp(32)
+                                    height: dp(26)
 
                                 Widget:
 
