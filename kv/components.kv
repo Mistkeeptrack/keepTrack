@@ -1,84 +1,60 @@
-#:import dp kivy.metrics.dp
+<NavItem@ButtonBehavior+AnchorLayout>:
+    icon_name: ""
+    target_screen: ""
 
+    anchor_x: "center"
+    anchor_y: "center"
 
-<TileCard>:
-    orientation: "vertical"
-    size_hint: None, None
-    size: dp(150), dp(150)
-    padding: dp(12)
-    spacing: dp(6)
-
-    canvas.before:
-        Color:
-            rgba: root.bg_rgba
-
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius:
-                [
-                dp(18),
-                dp(18),
-                dp(18),
-                dp(18)
-                ]
-
-    Widget:
-        size_hint_y: 0.12
+    on_release: app.go_to(root.target_screen)
 
     MDIcon:
-        icon: root.icon_text
-        halign: "center"
-        theme_text_color: "Custom"
-        text_color: 0, 0, 0, 1
-        font_size: "42sp"
-        size_hint_y: None
-        height: dp(48)
+        icon: root.icon_name
+        size_hint: None, None
+        size: dp(48), dp(48)
 
-    MDLabel:
-        text: root.title
         halign: "center"
         valign: "middle"
-        bold: True
-        font_style: "Subtitle1"
+        text_size: self.size
+
+        font_size: "30sp"
+
         theme_text_color: "Custom"
         text_color: 0, 0, 0, 1
-        text_size: self.width, None
-        size_hint_y: None
-        height: dp(45)
-
-    Widget:
-        size_hint_y: 0.12
 
 
-<BottomNav@MDBoxLayout>:
+<BottomNav@MDGridLayout>:
+    cols: 6
+
     size_hint_y: None
-    height: dp(64)
-    md_bg_color: 0.95, 0.95, 0.95, 1
-    padding: dp(6)
-    spacing: dp(4)
+    height: dp(72)
 
-    MDIconButton:
-        icon: "navigation-variant-outline"
-        pos_hint: {"center_y": 0.5}
-        on_release: app.go_to("navigation")
+    spacing: 0
 
-    MDIconButton:
-        icon: "chat-outline"
-        pos_hint: {"center_y": 0.5}
-        on_release: app.go_to("chat")
+    # Equal left and right padding
+    padding: dp(8), 0, dp(8), 0
 
-    MDIconButton:
-        icon: "bell-outline"
-        pos_hint: {"center_y": 0.5}
-        on_release: app.go_to("reminder")
+    md_bg_color: 0.96, 0.96, 0.96, 1
 
-    MDIconButton:
-        icon: "note-multiple-outline"
-        pos_hint: {"center_y": 0.5}
-        on_release: app.go_to("tasks")
+    NavItem:
+        icon_name: "navigation-variant-outline"
+        target_screen: "navigation"
 
-    MDIconButton:
-        icon: "vector-square"
-        pos_hint: {"center_y": 0.5}
-        on_release: app.go_to("org")
+    NavItem:
+        icon_name: "chat-outline"
+        target_screen: "chat"
+
+    NavItem:
+        icon_name: "bell-outline"
+        target_screen: "reminder"
+
+    NavItem:
+        icon_name: "file-document-multiple-outline"
+        target_screen: "tasks"
+
+    NavItem:
+        icon_name: "vector-square"
+        target_screen: "org"
+
+    NavItem:
+        icon_name: "cog-outline"
+        target_screen: "settings"

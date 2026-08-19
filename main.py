@@ -676,6 +676,16 @@ class TaskScreen(Screen):
     def start_loading_notes(self, _dt):
         self.load_notes()
 
+    def new_note(self):
+        app = MDApp.get_running_app()
+        app.go_to("note_editor")
+
+    def open_note_editor(self, note_id):
+        app = MDApp.get_running_app()
+        editor = self.manager.get_screen("note_editor")
+        editor.open_existing_note(note_id)
+        self.manager.current = "note_editor" 
+
     def create_note(self):
         app = MDApp.get_running_app()
 
@@ -1373,7 +1383,7 @@ class MistApp(MDApp):
                 "signin.kv",
             )
         )
-
+        Builder.load_file(os.path.join(BASE_DIR, "kv", "task.kv"))
         root = Builder.load_file(
             os.path.join(
                 BASE_DIR,

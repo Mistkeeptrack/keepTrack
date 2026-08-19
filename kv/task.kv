@@ -1,20 +1,62 @@
 <TaskScreen>:
     name: "tasks"
+
     MDBoxLayout:
         orientation: "vertical"
+        md_bg_color: 0.97, 0.97, 0.97, 1
 
+        # =========================
+        # TOP BAR
+        # =========================
         MDTopAppBar:
-            title: "Tasks"
-            left_action_items: [["arrow-left", lambda x: app.go("home")]]
+            title: "Notes"
+            elevation: 0
+            md_bg_color: 0.97, 0.97, 0.97, 1
+            specific_text_color: 0, 0, 0, 1
 
+            left_action_items:
+                [["arrow-left", lambda x: app.go_to("home")]]
+
+            right_action_items:
+                [["plus", lambda x: root.new_note()]]
+
+        # =========================
+        # SEARCH NOTES
+        # =========================
+
+
+        MDTextField:
+            id: search_notes
+            hint_text: "Search notes"
+            mode: "rectangle"
+            size_hint_x: 0.94
+            size_hint_y: None
+            height: dp(70)
+            pos_hint: {"center_x": 0.5}        
+
+        # =========================
+        # STATUS
+        # =========================
         MDLabel:
             id: status_label
-            text: "Loading..."
+            text: ""
             theme_text_color: "Hint"
+
             size_hint_y: None
             height: dp(28)
+
             padding_x: dp(16)
 
+        # =========================
+        # NOTES / TASK LIST
+        # =========================
         ScrollView:
+            do_scroll_x: False
+
             MDList:
                 id: task_list
+
+        # =========================
+        # BOTTOM NAVIGATION
+        # =========================
+        BottomNav:
